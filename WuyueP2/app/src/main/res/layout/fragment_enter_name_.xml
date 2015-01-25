@@ -13,21 +13,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Enter Name"
-            android:id="@+id/EnterName_button"
+            android:id="@+id/EnterName_EditText"
             android:layout_gravity="center_horizontal" />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Enter Age"
-            android:id="@+id/button2"
+            android:id="@+id/EnterAge_EditText"
             android:layout_gravity="center_horizontal" />
-
+        <Spinner
+            android:id="@+id/FoodType_Spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:entries="@array/array_food_types" />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ADD"
-            android:id="@+id/button5"
+            android:id="@+id/Add_Button"
             android:layout_gravity="center_horizontal" />
     </LinearLayout>
 </FrameLayout>

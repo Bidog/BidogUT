@@ -84,9 +84,55 @@ public class LaunchPage extends Fragment {
             }
         });
 
-
-
-
+        Button mViewButton = (Button) view.findViewById(R.id.View_Button);
+        mViewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // here you set what you want to do when user clicks your button,
+                // here should start a new activity
+                           }
+        });
+        Button mLoadButton = (Button) view.findViewById(R.id.Load_Button);
+        mLoadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // here you set what you want to do when user clicks your button,
+                Log.d("button", "I just click the button");
+                LoadFragment newFragment = new LoadFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                if(isTablet(getActivity().getBaseContext())){
+                    fragmentTransaction.replace(R.id.right_fragment_container, newFragment);
+                }else {
+                    fragmentTransaction.replace(R.id.left_fragment_container, newFragment);
+                }
+                fragmentTransaction.commit();
+            }
+        });
+        Button mStoreButton = (Button) view.findViewById(R.id.Store_Button);
+        mStoreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // here you set what you want to do when user clicks your button,
+                Log.d("button", "I just click the button");
+                StoreFragment newFragment = new StoreFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                if(isTablet(getActivity().getBaseContext())){
+                    fragmentTransaction.replace(R.id.right_fragment_container, newFragment);
+                }else {
+                    fragmentTransaction.replace(R.id.left_fragment_container, newFragment);
+                }
+                fragmentTransaction.commit();
+            }
+        });
+        Button mExitButton = (Button) view.findViewById(R.id.Exit_Button);
+        mExitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().finish();
+            }
+        });
         return view;
     }
 

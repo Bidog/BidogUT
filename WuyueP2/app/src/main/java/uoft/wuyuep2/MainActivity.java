@@ -10,6 +10,10 @@ import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
+
+import SupportClass.Person;
+
 
 public class MainActivity extends ActionBarActivity {
 
@@ -17,7 +21,7 @@ public class MainActivity extends ActionBarActivity {
     private final QuotesFragment mQuoteFragment = new QuotesFragment();
     public static String[] mTitleArray;
     public static String[] mQuoteArray;
-
+    ArrayList<Person> unSavePersonList;
 
   //  private final QuotesFragment mQuoteFragment = new QuotesFragment();
     private FragmentManager mFragmentManager;
@@ -38,6 +42,7 @@ public class MainActivity extends ActionBarActivity {
 
         setContentView(R.layout.main);
 
+        unSavePersonList = new ArrayList<Person>();
         // Get references to the TitleFragment and to the QuotesFragment
         mLeftFrameLayout = (FrameLayout) findViewById(R.id.left_fragment_container);
         mRightFrameLayout = (FrameLayout) findViewById(R.id.right_fragment_container);

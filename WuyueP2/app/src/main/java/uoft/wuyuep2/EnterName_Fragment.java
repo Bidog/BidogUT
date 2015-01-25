@@ -1,12 +1,17 @@
 package uoft.wuyuep2;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+
+import SupportClass.Person;
 
 
 /**
@@ -27,6 +32,9 @@ public class EnterName_Fragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private EditText mNameEditText;
+    private EditText mAgeEditText;
+    private Spinner mFoodSpinner;
     private OnFragmentInteractionListener mListener;
 
     /**
@@ -63,9 +71,41 @@ public class EnterName_Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_enter_name_, container, false);
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_enter_name_, container, false);
+        return view;
     }
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setup();
+    }
+
+    private void setup() {
+        this.mNameEditText = (EditText) getActivity().findViewById(R.id.EnterName_EditText);
+        this.mAgeEditText = (EditText) getActivity().findViewById(R.id.EnterAge_EditText);
+        this.mFoodSpinner = (Spinner) getActivity().findViewById(R.id.FoodType_Spinner);
+
+        Button addButton = (Button) getActivity().findViewById(R.id.Add_Button);
+        addButton.setOnClickListener(new View.OnClickListener() {
+
+
+            @Override
+            public void onClick(View v) {
+              //  addPerson();
+            }
+
+
+        });
+    }
+    public void addPerson(){
+        Person person = new Person(this.mNameEditText.getText().toString(),this.mFoodSpinner.getSelectedItem().toString(),Integer.valueOf(this.mFoodSpinner.getSelectedItem().toString()));
+
+    }
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
