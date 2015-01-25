@@ -80,7 +80,7 @@ public class LaunchPage extends Fragment {
                 }else {
                     fragmentTransaction.replace(R.id.left_fragment_container, fragment2);
                 }
-                fragmentTransaction.commit();
+                fragmentTransaction.addToBackStack(null).commit();
             }
         });
 
@@ -90,7 +90,7 @@ public class LaunchPage extends Fragment {
             public void onClick(View v) {
                 // here you set what you want to do when user clicks your button,
                 // here should start a new activity
-                           }
+             }
         });
         Button mLoadButton = (Button) view.findViewById(R.id.Load_Button);
         mLoadButton.setOnClickListener(new View.OnClickListener() {
@@ -106,9 +106,11 @@ public class LaunchPage extends Fragment {
                 }else {
                     fragmentTransaction.replace(R.id.left_fragment_container, newFragment);
                 }
-                fragmentTransaction.commit();
+                fragmentTransaction.addToBackStack(null).commit();
             }
         });
+
+
         Button mStoreButton = (Button) view.findViewById(R.id.Store_Button);
         mStoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +128,9 @@ public class LaunchPage extends Fragment {
                 fragmentTransaction.commit();
             }
         });
+
+
+        // this is done
         Button mExitButton = (Button) view.findViewById(R.id.Exit_Button);
         mExitButton.setOnClickListener(new View.OnClickListener() {
             @Override

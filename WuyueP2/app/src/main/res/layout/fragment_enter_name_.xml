@@ -19,7 +19,7 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Enter Age"
+            android:text="0"
             android:id="@+id/EnterAge_EditText"
             android:layout_gravity="center_horizontal" />
         <Spinner
@@ -28,11 +28,20 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:entries="@array/array_food_types" />
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ADD"
             android:id="@+id/Add_Button"
             android:layout_gravity="center_horizontal" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Done"
+            android:id="@+id/Done_Button"
+            android:layout_gravity="center_horizontal" />
+
     </LinearLayout>
 </FrameLayout>

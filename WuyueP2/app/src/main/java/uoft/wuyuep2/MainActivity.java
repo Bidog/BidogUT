@@ -12,17 +12,19 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
+import SupportClass.ActivityCommunicator;
+import SupportClass.FragmentCommunicator;
 import SupportClass.Person;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements ActivityCommunicator {
 
 
     private final QuotesFragment mQuoteFragment = new QuotesFragment();
     public static String[] mTitleArray;
     public static String[] mQuoteArray;
     ArrayList<Person> unSavePersonList;
-
+    public FragmentCommunicator fragmentCommunicator;
   //  private final QuotesFragment mQuoteFragment = new QuotesFragment();
     private FragmentManager mFragmentManager;
     private FrameLayout mLeftFrameLayout, mRightFrameLayout;
@@ -113,7 +115,13 @@ public class MainActivity extends ActionBarActivity {
         return (xlarge || large);
     }
 
+    // comming from enterName
+    public void passDataToActivity(Person somePerson){
+        // add this person in this arraylist
+        unSavePersonList.add(somePerson);
 
+        Log.d("this is main activity","data from at Person list is " + unSavePersonList.toString());
+    }
     @Override
     protected void onDestroy() {
         Log.i(TAG, getClass().getSimpleName() + ":entered onDestroy()");

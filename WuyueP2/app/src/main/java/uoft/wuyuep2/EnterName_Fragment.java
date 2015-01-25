@@ -2,8 +2,10 @@ package uoft.wuyuep2;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import SupportClass.ActivityCommunicator;
+import SupportClass.FragmentCommunicator;
 import SupportClass.Person;
 
 
@@ -22,12 +26,13 @@ import SupportClass.Person;
  * Use the {@link EnterName_Fragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EnterName_Fragment extends Fragment {
+public class EnterName_Fragment extends Fragment implements FragmentCommunicator {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    public Context context;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -36,6 +41,11 @@ public class EnterName_Fragment extends Fragment {
     private EditText mAgeEditText;
     private Spinner mFoodSpinner;
     private OnFragmentInteractionListener mListener;
+
+    //interface via which we communicate to hosting Activity
+    private ActivityCommunicator activityCommunicator;
+    private String activityAssignedValue ="";
+
 
     /**
      * Use this factory method to create a new instance of
@@ -90,19 +100,29 @@ public class EnterName_Fragment extends Fragment {
 
         Button addButton = (Button) getActivity().findViewById(R.id.Add_Button);
         addButton.setOnClickListener(new View.OnClickListener() {
-
-
             @Override
             public void onClick(View v) {
-              //  addPerson();
+                addPerson();
             }
+        });
 
-
+        Button DoneButton = (Button) getActivity().findViewById(R.id.Done_Button);
+        DoneButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                getFragmentManager().popBackStackImmediate();
+            }
         });
     }
     public void addPerson(){
-        Person person = new Person(this.mNameEditText.getText().toString(),this.mFoodSpinner.getSelectedItem().toString(),Integer.valueOf(this.mFoodSpinner.getSelectedItem().toString()));
 
+        Log.d("PERSON","PERSON + " + this.mNameEditText.getText().toString());
+        Log.d("FOOD","FOOD + " + this.mFoodSpinner.getSelectedItem().toString());
+        Log.d("PERSON","PERSON + " + this.mAgeEditText.getText().toString());
+
+
+        Person person = new Person(this.mNameEditText.getText().toString(),this.mFoodSpinner.getSelectedItem().toString(),this.mAgeEditText.getText().toString());
+        Log.d("the person we just add", "the person we add is" + person.toString());
+        activityCommunicator.passDataToActivity(person);
     }
 
 
@@ -117,18 +137,15 @@ public class EnterName_Fragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-//        try {
-//            mListener = (OnFragmentInteractionListener) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+        context = getActivity();
+        activityCommunicator =(ActivityCommunicator)context;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+
     }
 
     /**
@@ -146,4 +163,9 @@ public class EnterName_Fragment extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
+    public void passDataToFragment(String someValue){
+        activityAssignedValue = someValue;
+
+        //textView.setText(activityAssignedValue);
+    }
 }
