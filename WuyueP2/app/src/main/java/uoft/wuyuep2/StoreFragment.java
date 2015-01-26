@@ -1,12 +1,24 @@
 package uoft.wuyuep2;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+
+import SupportClass.Person;
 
 
 /**
@@ -22,11 +34,12 @@ public class StoreFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private static final String FILENAME="notes.txt";
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private EditText mSaveName;
+    private GlobalClass globalVariable;
     private OnFragmentInteractionListener mListener;
 
     /**
@@ -67,6 +80,50 @@ public class StoreFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_store, container, false);
     }
 
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setup();
+    }
+
+    private void setup() {
+
+        globalVariable = (GlobalClass)getActivity().getApplicationContext();
+        this.mSaveName = (EditText) getActivity().findViewById(R.id.Save_Name);
+        final Button mSaveButton = (Button) getActivity().findViewById(R.id.Save_Button);
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // getActivity unsaved list and store to the phone;
+                //unSavePersonList
+                ArrayList<Person> readytoStore = globalVariable.getUnSaveList();
+                //String[] items = new String[]{"1","2"};
+
+                File root=getActivity().getFilesDir();;
+
+                File target = new File(root, FILENAME);
+
+                try {
+                    save(readytoStore.toString(),target);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+                //new SaveTask( readytoStore.toString(), getTarget(mSaveName.getText().toString())).execute();
+                // clear the string
+                // TODO: CLEAN THE GLOBAL VARIABLE
+                        ((MainActivity) getActivity()).CleanUnSaveList();
+            }
+        });
+
+        Button mDone_Button = (Button)getActivity().findViewById(R.id.DoneButton);
+        mDone_Button.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                getFragmentManager().popBackStackImmediate();
+            }
+        });
+    }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -85,7 +142,11 @@ public class StoreFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
+    private File getTarget(String FILENAME) {
+        File root=null;
+        root=getActivity().getFilesDir();
+        return(new File(root, FILENAME+".txt"));
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -100,5 +161,20 @@ public class StoreFragment extends Fragment {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
+    private void save(String text, File target) throws IOException {
+        FileOutputStream fos=new FileOutputStream(target);
+        OutputStreamWriter out=new OutputStreamWriter(fos);
+        out.write(text);
+        out.flush();
+        fos.getFD().sync();
+        out.close();
+    }
+    private void boom(Exception e) {
+        Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_LONG)
+                .show();
+        Log.e(getClass().getSimpleName(), "Exception saving file", e);
+    }
+
+
 
 }

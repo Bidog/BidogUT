@@ -36,7 +36,7 @@ public class EnterName_Fragment extends Fragment implements FragmentCommunicator
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private GlobalClass globalVariable;
     private EditText mNameEditText;
     private EditText mAgeEditText;
     private Spinner mFoodSpinner;
@@ -76,6 +76,7 @@ public class EnterName_Fragment extends Fragment implements FragmentCommunicator
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -83,7 +84,6 @@ public class EnterName_Fragment extends Fragment implements FragmentCommunicator
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_enter_name_, container, false);
-
         // Inflate the layout for this fragment
         return view;
     }
@@ -94,6 +94,8 @@ public class EnterName_Fragment extends Fragment implements FragmentCommunicator
     }
 
     private void setup() {
+
+        globalVariable = (GlobalClass)getActivity().getApplicationContext();
         this.mNameEditText = (EditText) getActivity().findViewById(R.id.EnterName_EditText);
         this.mAgeEditText = (EditText) getActivity().findViewById(R.id.EnterAge_EditText);
         this.mFoodSpinner = (Spinner) getActivity().findViewById(R.id.FoodType_Spinner);
@@ -114,13 +116,13 @@ public class EnterName_Fragment extends Fragment implements FragmentCommunicator
         });
     }
     public void addPerson(){
-
         Log.d("PERSON","PERSON + " + this.mNameEditText.getText().toString());
         Log.d("FOOD","FOOD + " + this.mFoodSpinner.getSelectedItem().toString());
         Log.d("PERSON","PERSON + " + this.mAgeEditText.getText().toString());
 
 
         Person person = new Person(this.mNameEditText.getText().toString(),this.mFoodSpinner.getSelectedItem().toString(),this.mAgeEditText.getText().toString());
+        globalVariable.addPerson(person);
         Log.d("the person we just add", "the person we add is" + person.toString());
         activityCommunicator.passDataToActivity(person);
     }
@@ -139,6 +141,7 @@ public class EnterName_Fragment extends Fragment implements FragmentCommunicator
         super.onAttach(activity);
         context = getActivity();
         activityCommunicator =(ActivityCommunicator)context;
+
     }
 
     @Override

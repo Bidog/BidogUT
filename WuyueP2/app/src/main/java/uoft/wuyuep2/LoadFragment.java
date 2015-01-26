@@ -1,12 +1,24 @@
 package uoft.wuyuep2;
 
 import android.app.Activity;
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 
 /**
@@ -26,8 +38,12 @@ public class LoadFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private static final String FILENAME="notes.txt";
     private OnFragmentInteractionListener mListener;
+
+    private TextView mTextView;
+
+    //private ArrayList<Person>
 
     /**
      * Use this factory method to create a new instance of
@@ -60,6 +76,102 @@ public class LoadFragment extends Fragment {
         }
     }
 
+
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        try {
+            setup();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setup() throws IOException {
+        // get from preference //
+
+
+
+//     //   ArrayList<Displayable> list = this.mService.getStoredCatalogFiles(getActivity());
+//
+//        final ListView listView = (ListView) getActivity().findViewById(R.id.list);
+//        TitleDetailAdapter adapter = new TitleDetailAdapter(getActivity(), list);
+//        listView.setAdapter(adapter);
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                loadSelectedCatalog(listView, position);
+//            }
+//        });
+
+        Button mDone_Button = (Button)getActivity().findViewById(R.id.Done_Button_Load);
+        mDone_Button.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                getFragmentManager().popBackStackImmediate();
+            }
+        });
+        mTextView = (TextView)getActivity().findViewById(R.id.loadView);
+        //new LoadTask().execute(getTarget());
+        try {
+            Loadfile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+
+    private void Loadfile() throws IOException {
+        File root = getActivity().getFilesDir();
+        ;
+
+        File target = new File(root, FILENAME);
+
+
+        String result="";
+
+        try {
+            InputStream in=new FileInputStream(target);
+
+            if (in != null) {
+                try {
+                    InputStreamReader tmp=new InputStreamReader(in);
+                    BufferedReader reader=new BufferedReader(tmp);
+                    String str;
+                    StringBuilder buf=new StringBuilder();
+
+                    while ((str=reader.readLine()) != null) {
+                        buf.append(str);
+                        buf.append("\n");
+                    }
+
+                    result=buf.toString();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    in.close();
+                }
+            }
+        }
+        catch (java.io.FileNotFoundException e) {
+            // that's OK, we probably haven't created it yet
+        }
+
+        mTextView.setText(result);
+    }
+
+
+    private File getTarget() {
+        File root=null;
+
+
+
+        return(new File(root, "name.txt"));
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,7 +197,11 @@ public class LoadFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
+    private void boom(Exception e) {
+        Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_LONG)
+                .show();
+        Log.e(getClass().getSimpleName(), "Exception saving file", e);
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -99,6 +215,63 @@ public class LoadFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+    private class LoadTask extends AsyncTask<File, Void, String> {
+        private Exception e=null;
+
+        @Override
+        protected String doInBackground(File... args) {
+            String result="";
+
+            try {
+                result=load(args[0]);
+            }
+            catch (Exception e) {
+                this.e=e;
+            }
+            return(result);
+        }
+
+        @Override
+        protected void onPostExecute(String text) {
+            if (e == null) {
+                mTextView.setText(text);
+            }
+            else {
+                boom(e);
+            }
+        }
+    }
+    private String load(File target) throws IOException {
+        String result="";
+
+        try {
+            InputStream in=new FileInputStream(target);
+
+            if (in != null) {
+                try {
+                    InputStreamReader tmp=new InputStreamReader(in);
+                    BufferedReader reader=new BufferedReader(tmp);
+                    String str;
+                    StringBuilder buf=new StringBuilder();
+
+                    while ((str=reader.readLine()) != null) {
+                        buf.append(str);
+                        buf.append("\n");
+                    }
+
+                    result=buf.toString();
+                }
+                finally {
+                    in.close();
+                }
+            }
+        }
+        catch (java.io.FileNotFoundException e) {
+            // that's OK, we probably haven't created it yet
+        }
+
+        return(result);
     }
 
 }

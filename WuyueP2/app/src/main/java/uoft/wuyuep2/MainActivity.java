@@ -23,7 +23,7 @@ public class MainActivity extends ActionBarActivity implements ActivityCommunica
     private final QuotesFragment mQuoteFragment = new QuotesFragment();
     public static String[] mTitleArray;
     public static String[] mQuoteArray;
-    ArrayList<Person> unSavePersonList;
+    public ArrayList<Person> unSavePersonList;
     public FragmentCommunicator fragmentCommunicator;
   //  private final QuotesFragment mQuoteFragment = new QuotesFragment();
     private FragmentManager mFragmentManager;
@@ -156,5 +156,11 @@ public class MainActivity extends ActionBarActivity implements ActivityCommunica
     protected void onStop() {
         Log.i(TAG, getClass().getSimpleName() + ":entered onStop()");
         super.onStop();
+    }
+    public ArrayList<Person> getUnSaveList(){
+        return unSavePersonList;
+    }
+    public void CleanUnSaveList(){
+        unSavePersonList.clear();
     }
 }
