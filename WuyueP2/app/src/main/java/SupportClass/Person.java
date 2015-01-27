@@ -35,6 +35,6 @@ public class Person {
         return this.food;
     }
     public String toString(){
-        return this.name + this.age + this.food;
+        return " Name : "+this.name + "     Age : "+this.age + "\n Favorite Food: " + this.food;
     }
 }

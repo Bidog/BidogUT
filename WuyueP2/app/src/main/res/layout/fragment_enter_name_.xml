@@ -7,9 +7,10 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
+
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="center_horizontal|top">
         <TextView
@@ -22,9 +23,7 @@
             android:id="@+id/EnterName_EditText"
             style="edit_text_style"
             android:layout_gravity="center_horizontal" />
-
         <include layout="@layout/fragment_item_underline" />
-
         <TextView
             style="@style/text_view_style"
             android:text="Age:" />
@@ -57,8 +56,6 @@
             android:text="ADD"
             android:id="@+id/Add_Button"
             android:layout_gravity="center_horizontal" />
-
-
     </LinearLayout>
     <Button
         style="@style/button_style"
@@ -67,6 +64,4 @@
         android:text="Done"
         android:id="@+id/Done_Button"
         android:layout_gravity="center_horizontal|bottom" />
-
-
 </FrameLayout>
