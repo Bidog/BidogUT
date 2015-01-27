@@ -20,7 +20,7 @@ import SupportClass.Person;
 public class MainActivity extends ActionBarActivity implements ActivityCommunicator {
 
 
-    private final QuotesFragment mQuoteFragment = new QuotesFragment();
+    //private final QuotesFragment mQuoteFragment = new QuotesFragment();
     public static String[] mTitleArray;
     public static String[] mQuoteArray;
     public ArrayList<Person> unSavePersonList;
@@ -77,8 +77,8 @@ public class MainActivity extends ActionBarActivity implements ActivityCommunica
             fragmentTransaction = mFragmentManager
                     .beginTransaction();
             // Add the QuoteFragment to the layout
-            fragmentTransaction.add(R.id.right_fragment_container,
-                    mQuoteFragment);
+//            fragmentTransaction.add(R.id.right_fragment_container,
+//                    mQuoteFragment);
             // Add this FragmentTransaction to the backstack
             fragmentTransaction.addToBackStack(null);
             // Commit the FragmentTransaction

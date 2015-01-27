@@ -3,13 +3,14 @@ package uoft.wuyuep2;
 import android.app.Activity;
 import android.app.Fragment;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 
 /**
@@ -34,7 +36,6 @@ public class LoadFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -88,9 +89,6 @@ public class LoadFragment extends Fragment {
 
     private void setup() throws IOException {
         // get from preference //
-
-
-
 //     //   ArrayList<Displayable> list = this.mService.getStoredCatalogFiles(getActivity());
 //
 //        final ListView listView = (ListView) getActivity().findViewById(R.id.list);
@@ -103,7 +101,6 @@ public class LoadFragment extends Fragment {
 //                loadSelectedCatalog(listView, position);
 //            }
 //        });
-
         Button mDone_Button = (Button)getActivity().findViewById(R.id.Done_Button_Load);
         mDone_Button.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
@@ -117,36 +114,46 @@ public class LoadFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
-
-
-
 
     private void Loadfile() throws IOException {
         File root = getActivity().getFilesDir();
-        ;
-
         File target = new File(root, FILENAME);
-
-
         String result="";
+
+
+      //  String path = Environment.getExternalStorageDirectory().toString()+"/Pictures";
+//        Log.d("Files", "Path: " + root);
+//        File f = new File(root);
+        File file[] = root.listFiles();
+        Log.d("Files", "Size: "+ file.length);
+        ArrayList<String> fileName = new ArrayList<String>();
+        for (int i=0; i < file.length; i++)
+        {
+            Log.d("Files", "FileName:" + file[i].getName());
+            fileName.add(file[i].getName().toString());
+        }
+        // adapter a list to show files name
+        ListView lv = (ListView)this.getActivity().findViewById(R.id.LoadList);
+
+        ArrayAdapter<String> adapter;
+
+//        adapter = new ArrayAdaptergetActivity().(this,fileName);
+//        lv.setAdapter(adapter);
+
 
         try {
             InputStream in=new FileInputStream(target);
-
             if (in != null) {
                 try {
                     InputStreamReader tmp=new InputStreamReader(in);
                     BufferedReader reader=new BufferedReader(tmp);
                     String str;
                     StringBuilder buf=new StringBuilder();
-
                     while ((str=reader.readLine()) != null) {
                         buf.append(str);
                         buf.append("\n");
                     }
-
                     result=buf.toString();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -158,19 +165,12 @@ public class LoadFragment extends Fragment {
         catch (java.io.FileNotFoundException e) {
             // that's OK, we probably haven't created it yet
         }
-
         mTextView.setText(result);
     }
-
-
-    private File getTarget() {
-        File root=null;
-
-
-
-        return(new File(root, "name.txt"));
-    }
-
+//    private File getTarget() {
+//        File root=null;
+//        return(new File(root, "name.txt"));
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -189,7 +189,6 @@ public class LoadFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
     }
 
     @Override
@@ -216,62 +215,62 @@ public class LoadFragment extends Fragment {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
-    private class LoadTask extends AsyncTask<File, Void, String> {
-        private Exception e=null;
-
-        @Override
-        protected String doInBackground(File... args) {
-            String result="";
-
-            try {
-                result=load(args[0]);
-            }
-            catch (Exception e) {
-                this.e=e;
-            }
-            return(result);
-        }
-
-        @Override
-        protected void onPostExecute(String text) {
-            if (e == null) {
-                mTextView.setText(text);
-            }
-            else {
-                boom(e);
-            }
-        }
-    }
-    private String load(File target) throws IOException {
-        String result="";
-
-        try {
-            InputStream in=new FileInputStream(target);
-
-            if (in != null) {
-                try {
-                    InputStreamReader tmp=new InputStreamReader(in);
-                    BufferedReader reader=new BufferedReader(tmp);
-                    String str;
-                    StringBuilder buf=new StringBuilder();
-
-                    while ((str=reader.readLine()) != null) {
-                        buf.append(str);
-                        buf.append("\n");
-                    }
-
-                    result=buf.toString();
-                }
-                finally {
-                    in.close();
-                }
-            }
-        }
-        catch (java.io.FileNotFoundException e) {
-            // that's OK, we probably haven't created it yet
-        }
-
-        return(result);
-    }
+//    private class LoadTask extends AsyncTask<File, Void, String> {
+//        private Exception e=null;
+//
+//        @Override
+//        protected String doInBackground(File... args) {
+//            String result="";
+//
+//            try {
+//                result=load(args[0]);
+//            }
+//            catch (Exception e) {
+//                this.e=e;
+//            }
+//            return(result);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String text) {
+//            if (e == null) {
+//                mTextView.setText(text);
+//            }
+//            else {
+//                boom(e);
+//            }
+//        }
+//    }
+//    private String load(File target) throws IOException {
+//        String result="";
+//
+//        try {
+//            InputStream in=new FileInputStream(target);
+//
+//            if (in != null) {
+//                try {
+//                    InputStreamReader tmp=new InputStreamReader(in);
+//                    BufferedReader reader=new BufferedReader(tmp);
+//                    String str;
+//                    StringBuilder buf=new StringBuilder();
+//
+//                    while ((str=reader.readLine()) != null) {
+//                        buf.append(str);
+//                        buf.append("\n");
+//                    }
+//
+//                    result=buf.toString();
+//                }
+//                finally {
+//                    in.close();
+//                }
+//            }
+//        }
+//        catch (java.io.FileNotFoundException e) {
+//            // that's OK, we probably haven't created it yet
+//        }
+//
+//        return(result);
+//    }
 
 }

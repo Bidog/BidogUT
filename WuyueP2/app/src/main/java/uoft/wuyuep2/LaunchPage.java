@@ -114,7 +114,7 @@ public class LaunchPage extends Fragment {
             public void onClick(View v) {
                 // here you set what you want to do when user clicks your button,
                 Log.d("button", "I just click the button");
-                LoadFragment newFragment = new LoadFragment();
+                Load_Fragment_List newFragment = new Load_Fragment_List();
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 if(isTablet(getActivity().getBaseContext())){
