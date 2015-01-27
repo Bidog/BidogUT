@@ -20,8 +20,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/Save_Name"
             android:hint="File name"
-            android:layout_gravity="center_horizontal|top" />
-
+            android:layout_gravity="center_horizontal|top"
+        />
+        <include layout="@layout/fragment_item_underline" />
         <Button
             style="@style/button_style"
             android:layout_width="wrap_content"
@@ -29,8 +30,6 @@
             android:text="Save"
             android:id="@+id/Save_Button"
             android:layout_gravity="center_horizontal|top" />
-
-
     </LinearLayout>
     <Button
         style="@style/button_style"
