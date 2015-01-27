@@ -41,7 +41,6 @@
             android:text="View"
             android:id="@+id/View_Button"
             android:layout_gravity="center_horizontal"/>
-
         <Button
             style="@style/button_style"
             android:layout_width="match_parent"
@@ -49,5 +48,7 @@
             android:text="Exit"
             android:id="@+id/Exit_Button"
             android:layout_gravity="center_horizontal" />
+
     </LinearLayout>
+
 </FrameLayout>

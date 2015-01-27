@@ -8,14 +8,14 @@
         android:layout_height="fill_parent"
         android:layout_gravity="center_horizontal|top">
         <TextView
-            style="text_view_style"
+            style="@style/text_view_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Enter File Name"
             android:id="@+id/textView"
             android:layout_gravity="center_horizontal" />
         <EditText
-            style="edit_text_style"
+            style="@style/edit_text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/Save_Name"
@@ -30,8 +30,8 @@
             android:id="@+id/Save_Button"
             android:layout_gravity="center_horizontal|top" />
 
-    </LinearLayout>
 
+    </LinearLayout>
     <Button
         style="@style/button_style"
         android:layout_width="wrap_content"
@@ -39,5 +39,6 @@
         android:text="Done"
         android:id="@+id/DoneButton"
         android:layout_gravity="center_horizontal|bottom" />
+
 
 </FrameLayout>
