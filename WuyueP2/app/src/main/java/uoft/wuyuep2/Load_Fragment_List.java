@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
-import uoft.wuyuep2.dummy.DummyContent;
 
 /**
  * A fragment representing a list of Items.
@@ -258,7 +257,7 @@ public class Load_Fragment_List extends Fragment implements AbsListView.OnItemCl
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+
         }
     }
 
