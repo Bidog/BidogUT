@@ -12,6 +12,7 @@ import SupportClass.Person;
 public class GlobalClass extends Application{
     public ArrayList<Person> unSavePersonList = new ArrayList<Person>();
 
+
 //    public void addPerson
 
 
@@ -24,5 +25,15 @@ public class GlobalClass extends Application{
     }
     public void CleanUnSaveList(){
         unSavePersonList.clear();
+    }
+    public int getUnSaveListSize(){
+        return unSavePersonList.size();
+    }
+    public ArrayList<String> getPersonListString (){
+        ArrayList<String> result = new ArrayList<String>();
+        for(Person eachPerson : unSavePersonList){
+            result.add(eachPerson.toString());
+        }
+        return result;
     }
 }

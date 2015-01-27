@@ -31,7 +31,7 @@ public class ViewActivity extends ActionBarActivity {
             showList.add(eachPerson.toString());
         }
 
-        String[] items = new String[] {"Item 1", "Item 2", "Item 3"};
+
         Log.d("View Activity", "View Activity " + List);
         ListView lv = (ListView)findViewById(android.R.id.list);
         ArrayAdapter<String> adapter =

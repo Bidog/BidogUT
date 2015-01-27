@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -37,7 +38,7 @@ public class LaunchPage extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private GlobalClass globalVariable;
     private OnFragmentInteractionListener mListener;
 
     /**
@@ -70,6 +71,7 @@ public class LaunchPage extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        globalVariable = (GlobalClass)getActivity().getApplicationContext();
         View view = inflater.inflate(R.layout.fragment_launch_page, container, false);
         Button mEnterNameButton = (Button) view.findViewById(R.id.EnterName_button);
         mEnterNameButton.setOnClickListener(new View.OnClickListener() {
@@ -127,7 +129,7 @@ public class LaunchPage extends Fragment {
         });
 
 
-        Button mStoreButton = (Button) view.findViewById(R.id.Store_Button);
+        final Button mStoreButton = (Button) view.findViewById(R.id.Store_Button);
         mStoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,18 +147,22 @@ public class LaunchPage extends Fragment {
             }
         });
 
-
         // this is done
         Button mExitButton = (Button) view.findViewById(R.id.Exit_Button);
         mExitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().finish();
+                if(globalVariable.getUnSaveListSize()==0){
+                    getActivity().finish();
+                }else{
+                    Toast toast = Toast.makeText(getActivity(), "There is a unsaved list, please store first",Toast.LENGTH_SHORT);
+                    toast.show();
+                    mStoreButton.performClick();
+                }
             }
         });
         return view;
     }
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

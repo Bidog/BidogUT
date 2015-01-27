@@ -13,6 +13,7 @@ import android.widget.EditText;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
@@ -98,15 +99,18 @@ public class StoreFragment extends Fragment {
 
                 String saveFileName = mSaveName.getText().toString() + ".txt";
                 File target = new File(root, saveFileName);
+
+
                 try {
-                    save(readytoStore.toString(),target);
+                   // save(readytoStore.toString(),target);
+                    saveList(globalVariable.getPersonListString(),target);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                //new SaveTask( readytoStore.toString(), getTarget(mSaveName.getText().toString())).execute();
-                // clear the string
+
                 // TODO: CLEAN THE GLOBAL VARIABLE
-                        ((MainActivity) getActivity()).CleanUnSaveList();
+                globalVariable.CleanUnSaveList();
+                    //    ((MainActivity) getActivity()).CleanUnSaveList();
             }
         });
         Button mDone_Button = (Button)getActivity().findViewById(R.id.DoneButton);
@@ -154,6 +158,7 @@ public class StoreFragment extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
     private void save(String text, File target) throws IOException {
+
         FileOutputStream fos=new FileOutputStream(target);
         OutputStreamWriter out=new OutputStreamWriter(fos);
         out.write(text);
@@ -161,6 +166,16 @@ public class StoreFragment extends Fragment {
         fos.getFD().sync();
         out.close();
     }
+
+    private void saveList(ArrayList<String> personlist, File target) throws  IOException{
+        FileOutputStream fos = new FileOutputStream((target));
+        ObjectOutputStream o1 = new ObjectOutputStream((fos));
+        o1.writeObject(personlist);
+        o1.close();
+        fos.close();
+    }
+
+
 //    private void boom(Exception e) {
 //        Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_LONG)
 //                .show();

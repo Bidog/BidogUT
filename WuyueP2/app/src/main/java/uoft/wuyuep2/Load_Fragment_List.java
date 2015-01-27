@@ -15,12 +15,10 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 import uoft.wuyuep2.dummy.DummyContent;
@@ -85,8 +83,6 @@ public class Load_Fragment_List extends Fragment implements AbsListView.OnItemCl
         }
 
         // TODO: Change Adapter to display your content
-//        mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-//                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
     }
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -112,48 +108,130 @@ public class Load_Fragment_List extends Fragment implements AbsListView.OnItemCl
     }
 
     private void Loadfile() throws IOException {
-        File root = getActivity().getFilesDir();
-        File target = new File(root, FILENAME);
-        String result="";
+        final File root = getActivity().getFilesDir();
+        //File target = new File(root, FILENAME);
+
         File file[] = root.listFiles();
         Log.d("Files", "Size: " + file.length);
-        ArrayList<String> fileName = new ArrayList<String>();
+        final ArrayList<String> fileName = new ArrayList<String>();
         for (int i=0; i < file.length; i++)
         {
             Log.d("Files", "FileName:" + file[i].getName());
             fileName.add(file[i].getName().toString());
         }
         // adapter a list to show files name
-        ListView lv = (ListView)getActivity().findViewById(R.id.LoadList);
+        final ListView lv = (ListView)getActivity().findViewById(R.id.LoadList);
         mAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_1,fileName);
           lv.setAdapter(mAdapter);
 
-        try {
-            InputStream in=new FileInputStream(target);
-            if (in != null) {
-                try {
-                    InputStreamReader tmp=new InputStreamReader(in);
-                    BufferedReader reader=new BufferedReader(tmp);
-                    String str;
-                    StringBuilder buf=new StringBuilder();
-                    while ((str=reader.readLine()) != null) {
-                        buf.append(str);
-                        buf.append("\n");
-                    }
-                    result=buf.toString();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    in.close();
-                }
-            }
-        }
-        catch (java.io.FileNotFoundException e) {
-            // that's OK, we probably haven't created it yet
-        }
-    }
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+                String selectedFile = fileName.get(position);
+                File target = new File(root, selectedFile);
+
+
+                    try {
+                        FileInputStream in = new FileInputStream(target);
+                        ObjectInputStream ois = new ObjectInputStream(in);
+                        ArrayList<String> returnlist = (ArrayList<String>) ois.readObject();
+                        Log.d("load file", fileName +" the load file result " + returnlist);
+                        mAdapter = new ArrayAdapter<String>(getActivity(),
+                                android.R.layout.simple_list_item_1,returnlist);
+                        lv.setAdapter(mAdapter);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+
+
+//                try {
+//                    InputStream in = new FileInputStream(target);
+//                    if (in != null) {
+//                        try {
+//                            InputStreamReader tmp = new InputStreamReader(in);
+//                            BufferedReader reader = new BufferedReader(tmp);
+//                            String str;
+//                            StringBuilder buf = new StringBuilder();
+//                            while ((str = reader.readLine()) != null) {
+//                                buf.append(str);
+//                                buf.append("\n");
+//                            }
+//                            String result = buf.toString();
+//
+//                            Log.d("load file", fileName +" the load file result " + result);
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        } finally {
+//                            in.close();
+//                        }
+//                    }
+//                } catch (IOException e) {
+//                    // that's OK, we probably haven't created it yet
+//                }
+            }
+
+//                //create a Fragment
+//                Fragment detailFragment = new FragmentDetail();
+//
+//
+//                Bundle mBundle = new Bundle();
+//                mBundle.putString("arg", mDataSourceList.get(position));
+//                detailFragment.setArguments(mBundle);
+//
+//                final FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//                final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//
+//                //check if the device is landscape or portrait
+//                Configuration configuration = getActivity().getResources().getConfiguration();
+//                int ori = configuration.orientation;
+//
+//                fragmentTransaction.replace(R.id.detail_container, detailFragment);
+//
+//                if(ori == configuration.ORIENTATION_PORTRAIT){
+//                    fragmentTransaction.addToBackStack(null);
+//                }
+//
+//                fragmentTransaction.commit();
+//
+//            }
+        });
+
+
+//        try {
+//            InputStream in=new FileInputStream(target);
+//            if (in != null) {
+//                try {
+//                    InputStreamReader tmp=new InputStreamReader(in);
+//                    BufferedReader reader=new BufferedReader(tmp);
+//                    String str;
+//                    StringBuilder buf=new StringBuilder();
+//                    while ((str=reader.readLine()) != null) {
+//                        buf.append(str);
+//                        buf.append("\n");
+//                    }
+//                    result=buf.toString();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                } finally {
+//                    in.close();
+//                }
+//            }
+//        }
+//        catch (java.io.FileNotFoundException e) {
+//            // that's OK, we probably haven't created it yet
+//        }
+//    }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
