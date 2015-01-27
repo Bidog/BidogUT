@@ -20,12 +20,10 @@ import SupportClass.Person;
 public class MainActivity extends ActionBarActivity implements ActivityCommunicator {
 
 
-    //private final QuotesFragment mQuoteFragment = new QuotesFragment();
-    public static String[] mTitleArray;
-    public static String[] mQuoteArray;
+
     public ArrayList<Person> unSavePersonList;
     public FragmentCommunicator fragmentCommunicator;
-  //  private final QuotesFragment mQuoteFragment = new QuotesFragment();
+
     private FragmentManager mFragmentManager;
     private FrameLayout mLeftFrameLayout, mRightFrameLayout;
 

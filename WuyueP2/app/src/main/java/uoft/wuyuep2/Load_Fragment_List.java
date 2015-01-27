@@ -37,7 +37,7 @@ public class Load_Fragment_List extends Fragment implements AbsListView.OnItemCl
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static final String FILENAME="notes.txt";
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -148,35 +148,6 @@ public class Load_Fragment_List extends Fragment implements AbsListView.OnItemCl
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
-
-
-
-
-
-//                try {
-//                    InputStream in = new FileInputStream(target);
-//                    if (in != null) {
-//                        try {
-//                            InputStreamReader tmp = new InputStreamReader(in);
-//                            BufferedReader reader = new BufferedReader(tmp);
-//                            String str;
-//                            StringBuilder buf = new StringBuilder();
-//                            while ((str = reader.readLine()) != null) {
-//                                buf.append(str);
-//                                buf.append("\n");
-//                            }
-//                            String result = buf.toString();
-//
-//                            Log.d("load file", fileName +" the load file result " + result);
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        } finally {
-//                            in.close();
-//                        }
-//                    }
-//                } catch (IOException e) {
-//                    // that's OK, we probably haven't created it yet
-//                }
             }
 
 //                //create a Fragment
@@ -204,32 +175,6 @@ public class Load_Fragment_List extends Fragment implements AbsListView.OnItemCl
 //
 //            }
         });
-
-
-//        try {
-//            InputStream in=new FileInputStream(target);
-//            if (in != null) {
-//                try {
-//                    InputStreamReader tmp=new InputStreamReader(in);
-//                    BufferedReader reader=new BufferedReader(tmp);
-//                    String str;
-//                    StringBuilder buf=new StringBuilder();
-//                    while ((str=reader.readLine()) != null) {
-//                        buf.append(str);
-//                        buf.append("\n");
-//                    }
-//                    result=buf.toString();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                } finally {
-//                    in.close();
-//                }
-//            }
-//        }
-//        catch (java.io.FileNotFoundException e) {
-//            // that's OK, we probably haven't created it yet
-//        }
-//    }
     }
 
     @Override

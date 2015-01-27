@@ -21,16 +21,13 @@ public class ViewActivity extends ActionBarActivity {
         setContentView(R.layout.activity_view);
         // get the unsavepersonlist from mainactivity
         Bundle b = this.getIntent().getExtras();
-
         final GlobalClass globalVariable = (GlobalClass) getApplicationContext();
-
         // Get name and email from global/application context
         ArrayList<Person> List = globalVariable.getUnSaveList();
         ArrayList<String> showList = new ArrayList<String>();
         for(Person eachPerson :List){
             showList.add(eachPerson.toString());
         }
-
 
         Log.d("View Activity", "View Activity " + List);
         ListView lv = (ListView)findViewById(android.R.id.list);
@@ -51,12 +48,10 @@ public class ViewActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

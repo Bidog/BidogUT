@@ -101,7 +101,6 @@ public class LaunchPage extends Fragment {
                 ArrayList<Person> readytoSend = ((MainActivity)getActivity()).getUnSaveList();
 
                 Bundle bundleObject = new Bundle();
-                //bundleObject.putParcelableArrayList("personlist", (ArrayList<? extends android.os.Parcelable>) readytoSend);
 
 // Put Bundle in to Intent and call start Activity
                 explicitIntent.putExtras(bundleObject);
@@ -202,5 +201,4 @@ public class LaunchPage extends Fragment {
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
-
 }

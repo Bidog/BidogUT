@@ -12,36 +12,41 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Enter Name"
+            android:hint="Enter Person Name"
             android:id="@+id/EnterName_EditText"
+            style="edit_text_style"
             android:layout_gravity="center_horizontal" />
 
         <EditText
+            style="edit_text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
+            android:hint="0"
             android:id="@+id/EnterAge_EditText"
+            android:inputType="number"
             android:layout_gravity="center_horizontal" />
         <Spinner
             android:id="@+id/FoodType_Spinner"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:entries="@array/array_food_types" />
 
         <Button
+            style="@style/button_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ADD"
             android:id="@+id/Add_Button"
             android:layout_gravity="center_horizontal" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Done"
-            android:id="@+id/Done_Button"
-            android:layout_gravity="center_horizontal" />
-
     </LinearLayout>
+
+    <Button
+        style="@style/button_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        android:id="@+id/Done_Button"
+        android:layout_gravity="center_horizontal|bottom" />
 </FrameLayout>

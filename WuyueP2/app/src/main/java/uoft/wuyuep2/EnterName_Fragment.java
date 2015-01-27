@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import SupportClass.ActivityCommunicator;
 import SupportClass.FragmentCommunicator;
@@ -34,8 +35,7 @@ public class EnterName_Fragment extends Fragment implements FragmentCommunicator
 
     public Context context;
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
     private GlobalClass globalVariable;
     private EditText mNameEditText;
     private EditText mAgeEditText;
@@ -73,8 +73,7 @@ public class EnterName_Fragment extends Fragment implements FragmentCommunicator
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
 
     }
@@ -104,7 +103,14 @@ public class EnterName_Fragment extends Fragment implements FragmentCommunicator
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addPerson();
+                if(mNameEditText.getText().toString().matches("") || mAgeEditText.getText().toString().matches("")){
+                    Toast toast = Toast.makeText(getActivity(), "Please fill out both name and age.",Toast.LENGTH_SHORT);
+                    toast.show();
+                }else {
+                    addPerson();
+                    Toast toast = Toast.makeText(getActivity(), "Person has been added to the list",Toast.LENGTH_SHORT);
+                    toast.show();
+                }
             }
         });
 
@@ -119,8 +125,6 @@ public class EnterName_Fragment extends Fragment implements FragmentCommunicator
         Log.d("PERSON","PERSON + " + this.mNameEditText.getText().toString());
         Log.d("FOOD","FOOD + " + this.mFoodSpinner.getSelectedItem().toString());
         Log.d("PERSON","PERSON + " + this.mAgeEditText.getText().toString());
-
-
         Person person = new Person(this.mNameEditText.getText().toString(),this.mFoodSpinner.getSelectedItem().toString(),this.mAgeEditText.getText().toString());
         globalVariable.addPerson(person);
         Log.d("the person we just add", "the person we add is" + person.toString());
