@@ -1,5 +1,6 @@
 package uoft.p3;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -17,7 +18,8 @@ public class MainActivity extends ActionBarActivity {
         Button mPreviewPic = (Button) findViewById(R.id.PictureMode_Button);
         mPreviewPic.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v){
-                Intent explicitIntent = new Intent(MainActivity.this, )
+                Intent explicitIntent = new Intent(MainActivity.this, PictureMode.class);
+                startActivity(explicitIntent);
             }
         });
     }
@@ -44,4 +46,5 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
