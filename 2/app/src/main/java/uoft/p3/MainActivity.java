@@ -22,6 +22,15 @@ public class MainActivity extends ActionBarActivity {
                 startActivity(explicitIntent);
             }
         });
+        Button mGallery = (Button) findViewById(R.id.gallerymode_Button);
+        mGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent explicitIntent = new Intent(MainActivity.this, galleryMode.class);
+                startActivity(explicitIntent);
+            }
+        });
+
     }
 
 

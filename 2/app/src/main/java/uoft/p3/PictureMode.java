@@ -1,13 +1,17 @@
 package uoft.p3;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -210,11 +214,12 @@ public class PictureMode extends ActionBarActivity implements SensorEventListene
             public void onPictureTaken(byte[] data, Camera camera) {
                 //make a new picture file
                 File pictureFile = getOutputMediaFile();
-
+              //  new SaveImageTask().execute(data);
                 if (pictureFile == null) {
                     return;
                 }
                 try {
+
                     //write the file
                     FileOutputStream fos = new FileOutputStream(pictureFile);
                     fos.write(data);
@@ -244,8 +249,9 @@ public class PictureMode extends ActionBarActivity implements SensorEventListene
     //make picture and save to a folder
     private static File getOutputMediaFile() {
         //make a new file directory inside the "sdcard" folder
-        File mediaStorageDir = new File("/sdcard/", "JCG Camera");
-
+        File sdCard = Environment.getExternalStorageDirectory();
+        File mediaStorageDir = new File(sdCard.getAbsolutePath() + "/wuyueCam");
+        mediaStorageDir.mkdirs();
         //if this "JCGCamera folder does not exist
         if (!mediaStorageDir.exists()) {
             //if you cannot make this folder return
@@ -290,6 +296,7 @@ public class PictureMode extends ActionBarActivity implements SensorEventListene
                              mCamera.takePicture(null, null, mPicture);
                              Log.d("SwA", "capture a picture ");
                          }
+                         safeFlag=false;
                      }
                  }, 4000);
              }
@@ -326,7 +333,44 @@ public class PictureMode extends ActionBarActivity implements SensorEventListene
         counter = 0;
         firstMovTime = System.currentTimeMillis();
     }
+    private class SaveImageTask extends AsyncTask<byte[], Void, Void> {
 
+        @Override
+        protected Void doInBackground(byte[]... data) {
+            FileOutputStream outStream = null;
+
+            // Write to SD Card
+            try {
+                File sdCard = Environment.getExternalStorageDirectory();
+                File dir = new File (sdCard.getAbsolutePath() + "/wuyueCam");
+                dir.mkdirs();
+
+                String fileName = String.format("%d.jpg", System.currentTimeMillis());
+                File outFile = new File(dir, fileName);
+
+                outStream = new FileOutputStream(outFile);
+                outStream.write(data[0]);
+                outStream.flush();
+                outStream.close();
+
+                Log.d("yuyu", "onPictureTaken - wrote bytes: " + data.length + " to " + outFile.getAbsolutePath());
+
+                refreshGallery(outFile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+            }
+            return null;
+        }
+
+    }
+    private void refreshGallery(File file) {
+        Intent mediaScanIntent = new Intent( Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        mediaScanIntent.setData(Uri.fromFile(file));
+        sendBroadcast(mediaScanIntent);
+    }
 }
 
 

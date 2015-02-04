@@ -21,8 +21,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/button2"
+        android:text="gallery mode"
+        android:id="@+id/gallerymode_Button"
         android:layout_below="@+id/PictureMode_Button"
         android:layout_alignEnd="@+id/PictureMode_Button"
         android:layout_marginTop="64dp" />
