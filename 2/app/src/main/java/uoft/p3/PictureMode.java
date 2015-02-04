@@ -3,8 +3,14 @@ package uoft.p3;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -19,7 +25,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class PictureMode extends ActionBarActivity {
+public class PictureMode extends ActionBarActivity implements SensorEventListener {
+
+    private boolean safeFlag;
 
     private Camera mCamera;
     private Preview mPreview;
@@ -28,6 +36,20 @@ public class PictureMode extends ActionBarActivity {
     private Context myContext;
     private LinearLayout cameraPreview;
     private boolean cameraFront = false;
+    // Below is for shake
+    private SensorManager sensorMgr;
+    private static final int MOV_COUNTS = 2;
+    private static final int MOV_THRESHOLD = 4;
+    private static final float ALPHA = 0.8F;
+    private static final int SHAKE_WINDOW_TIME_INTERVAL = 500; // milliseconds
+
+    // Gravity force on x,y,z axis
+    private float gravity[] = new float[3];
+
+    private int counter;
+    private long firstMovTime;
+    private ShakeListener listener;
+    private Sensor s;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,7 +57,24 @@ public class PictureMode extends ActionBarActivity {
         setContentView(R.layout.activity_picture_mode);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         myContext = this;
+        safeFlag = true;
         initialize();
+        if (mCamera == null) {
+            //if the front facing camera does not exist
+            if (findFrontFacingCamera() < 0) {
+                Toast.makeText(this, "No front facing camera found.", Toast.LENGTH_LONG).show();
+                switchCamera.setVisibility(View.GONE);
+            }
+            mCamera = Camera.open(findBackFacingCamera());
+            mPicture = getPictureCallback();
+            mPreview.refreshCamera(mCamera);
+        }
+        sensorMgr = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+        sensorMgr = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        s = sensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorMgr.registerListener(this, s, SensorManager.SENSOR_DELAY_NORMAL);
+
     }
 
     private int findFrontFacingCamera() {
@@ -96,11 +135,11 @@ public class PictureMode extends ActionBarActivity {
         mPreview = new Preview(myContext, mCamera);
         cameraPreview.addView(mPreview);
 
-        capture = (Button) findViewById(R.id.button_capture);
-        capture.setOnClickListener(captrureListener);
-
-        switchCamera = (Button) findViewById(R.id.button_ChangeCamera);
-        switchCamera.setOnClickListener(switchCameraListener);
+//        capture = (Button) findViewById(R.id.button_capture);
+//        capture.setOnClickListener(captrureListener);
+//
+//        switchCamera = (Button) findViewById(R.id.button_ChangeCamera);
+//        switchCamera.setOnClickListener(switchCameraListener);
     }
 
     View.OnClickListener switchCameraListener = new View.OnClickListener() {
@@ -189,6 +228,7 @@ public class PictureMode extends ActionBarActivity {
 
                 //refresh camera to continue preview
                 mPreview.refreshCamera(mCamera);
+                safeFlag = true;
             }
         };
         return picture;
@@ -197,7 +237,7 @@ public class PictureMode extends ActionBarActivity {
     View.OnClickListener captrureListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            mCamera.takePicture(null, null, mPicture);
+         //   mCamera.takePicture(null, null, mPicture);
         }
     };
 
@@ -210,6 +250,7 @@ public class PictureMode extends ActionBarActivity {
         if (!mediaStorageDir.exists()) {
             //if you cannot make this folder return
             if (!mediaStorageDir.mkdirs()) {
+                Log.d("SwA", " cannot save ");
                 return null;
             }
         }
@@ -230,4 +271,62 @@ public class PictureMode extends ActionBarActivity {
             mCamera = null;
         }
     }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        float maxAcc = calcMaxAcceleration(event);
+        Log.d("SwA", "Max Acc [" + maxAcc + "]");
+
+        if (maxAcc >= MOV_THRESHOLD) {
+             if (counter == 0) {
+                counter++;
+                firstMovTime = System.currentTimeMillis();
+                Log.d("SwA", "First mov..");
+            } else {
+                 Handler handler = new Handler();
+                 handler.postDelayed(new Runnable() {
+                     public void run() {
+                         if(safeFlag == true) {
+                             mCamera.takePicture(null, null, mPicture);
+                             Log.d("SwA", "capture a picture ");
+                         }
+                     }
+                 }, 4000);
+             }
+
+            //
+
+            //mCamera.takePicture(null, null, mPicture);
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+    private float calcGravityForce(float currentVal, int index) {
+        return  ALPHA * gravity[index] + (1 - ALPHA) * currentVal;
+    }
+    private float calcMaxAcceleration(SensorEvent event) {
+        gravity[0] = calcGravityForce(event.values[0], 0);
+        gravity[1] = calcGravityForce(event.values[1], 1);
+        gravity[2] = calcGravityForce(event.values[2], 2);
+
+        float accX = event.values[0] - gravity[0];
+        float accY = event.values[1] - gravity[1];
+        float accZ = event.values[2] - gravity[2];
+        float max1 = Math.max(accX, accY);
+        return Math.max(max1, accZ);
+    }
+    public static interface ShakeListener {
+        public void onShake();
+    }
+    private void resetAllData() {
+        Log.d("SwA", "Reset all data");
+        counter = 0;
+        firstMovTime = System.currentTimeMillis();
+    }
+
 }
+
+
