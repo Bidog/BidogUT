@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +32,7 @@ import java.util.Date;
 
 public class PictureMode extends ActionBarActivity implements SensorEventListener {
 
+    private static String myLocation;
     private boolean safeFlag;
 
     private Camera mCamera;
@@ -46,6 +48,17 @@ public class PictureMode extends ActionBarActivity implements SensorEventListene
     private static final int MOV_THRESHOLD = 4;
     private static final float ALPHA = 0.8F;
     private static final int SHAKE_WINDOW_TIME_INTERVAL = 500; // milliseconds
+    public GlobalClass globalVariable;
+
+    private static final long MINIMUM_DISTANCE_CHANGE_FOR_UPDATES = 1; // in Meters
+    private static final long MINIMUM_TIME_BETWEEN_UPDATES = 1000; // in Milliseconds
+
+    double mLongitude;
+    double mLatitude;
+
+   // private String myLocation;
+
+    // location manager
 
     // Gravity force on x,y,z axis
     private float gravity[] = new float[3];
@@ -62,6 +75,12 @@ public class PictureMode extends ActionBarActivity implements SensorEventListene
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         myContext = this;
         safeFlag = true;
+        globalVariable = new GlobalClass();
+        GeocodingLocation locationAddress = new GeocodingLocation();
+        locationAddress.getAddressFromLocation("address",
+                getApplicationContext(), new GeocoderHandler());
+        locationAddress.getAddressFromLocation("address",
+                getApplicationContext(), new GeocoderHandler());
         initialize();
         if (mCamera == null) {
             //if the front facing camera does not exist
@@ -138,12 +157,6 @@ public class PictureMode extends ActionBarActivity implements SensorEventListene
         cameraPreview = (LinearLayout) findViewById(R.id.camera_preview);
         mPreview = new Preview(myContext, mCamera);
         cameraPreview.addView(mPreview);
-
-//        capture = (Button) findViewById(R.id.button_capture);
-//        capture.setOnClickListener(captrureListener);
-//
-//        switchCamera = (Button) findViewById(R.id.button_ChangeCamera);
-//        switchCamera.setOnClickListener(switchCameraListener);
     }
 
     View.OnClickListener switchCameraListener = new View.OnClickListener() {
@@ -219,7 +232,6 @@ public class PictureMode extends ActionBarActivity implements SensorEventListene
                     return;
                 }
                 try {
-
                     //write the file
                     FileOutputStream fos = new FileOutputStream(pictureFile);
                     fos.write(data);
@@ -230,7 +242,6 @@ public class PictureMode extends ActionBarActivity implements SensorEventListene
                 } catch (FileNotFoundException e) {
                 } catch (IOException e) {
                 }
-
                 //refresh camera to continue preview
                 mPreview.refreshCamera(mCamera);
                 safeFlag = true;
@@ -265,8 +276,9 @@ public class PictureMode extends ActionBarActivity implements SensorEventListene
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
         //and make a media file:
-        mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
-
+        String fileName = String.format("%s", myLocation);
+        //String fileName = String.format("%s", timeStamp);
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + fileName + ".jpg");
         return mediaFile;
     }
 
@@ -282,7 +294,6 @@ public class PictureMode extends ActionBarActivity implements SensorEventListene
     public void onSensorChanged(SensorEvent event) {
         float maxAcc = calcMaxAcceleration(event);
         Log.d("SwA", "Max Acc [" + maxAcc + "]");
-
         if (maxAcc >= MOV_THRESHOLD) {
              if (counter == 0) {
                 counter++;
@@ -291,19 +302,22 @@ public class PictureMode extends ActionBarActivity implements SensorEventListene
             } else {
                  Handler handler = new Handler();
                  handler.postDelayed(new Runnable() {
+                     public GeocodingLocation locationAddress;
+
                      public void run() {
                          if(safeFlag == true) {
+
+                             locationAddress.getAddressFromLocation("address",
+                                     getApplicationContext(), new GeocoderHandler());
                              mCamera.takePicture(null, null, mPicture);
+                             // Todo : get the longitude and latitude
+
                              Log.d("SwA", "capture a picture ");
+                             safeFlag=false;
                          }
-                         safeFlag=false;
                      }
                  }, 4000);
              }
-
-            //
-
-            //mCamera.takePicture(null, null, mPicture);
         }
     }
 
@@ -334,27 +348,20 @@ public class PictureMode extends ActionBarActivity implements SensorEventListene
         firstMovTime = System.currentTimeMillis();
     }
     private class SaveImageTask extends AsyncTask<byte[], Void, Void> {
-
         @Override
         protected Void doInBackground(byte[]... data) {
             FileOutputStream outStream = null;
-
             // Write to SD Card
             try {
                 File sdCard = Environment.getExternalStorageDirectory();
                 File dir = new File (sdCard.getAbsolutePath() + "/wuyueCam");
                 dir.mkdirs();
-
-                String fileName = String.format("%d.jpg", System.currentTimeMillis());
+                String fileName = String.format("%s.jpg", myLocation);
                 File outFile = new File(dir, fileName);
-
                 outStream = new FileOutputStream(outFile);
                 outStream.write(data[0]);
                 outStream.flush();
                 outStream.close();
-
-                Log.d("yuyu", "onPictureTaken - wrote bytes: " + data.length + " to " + outFile.getAbsolutePath());
-
                 refreshGallery(outFile);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -364,13 +371,30 @@ public class PictureMode extends ActionBarActivity implements SensorEventListene
             }
             return null;
         }
-
     }
     private void refreshGallery(File file) {
         Intent mediaScanIntent = new Intent( Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         mediaScanIntent.setData(Uri.fromFile(file));
         sendBroadcast(mediaScanIntent);
     }
+    private class GeocoderHandler extends Handler {
+        @Override
+        public void handleMessage(Message message) {
+            String locationAddress = null;
+            switch (message.what) {
+                case 1:
+                    Bundle bundle = message.getData();
+                    locationAddress = bundle.getString("address");
+                    globalVariable.addLocation(locationAddress);
+                    break;
+                default:
+                    bundle = message.getData();
+                    //locationAddress = bundle.getString("address");
+            }
+            myLocation = locationAddress;
+        }
+    }
+
 }
 
 
